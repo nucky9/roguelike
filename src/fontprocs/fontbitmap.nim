@@ -31,15 +31,23 @@ proc renderString*(fontFile: string, fontSize: cint, renderer: RendererPtr, char
   var textSurface = renderGlyphBlended(font, charRend.uint16, colour)
   let fontWidth = textSurface.w
   let fontHeight = textSurface.h
+  var srcRect: Rect
+  srcRect.x = 0.cint
+  srcRect.y = 0.cint
+  srcRect.w = fontWidth
+  srcRect.h = fontHeight
+
+  
   var dstRect: Rect
   dstRect.x = xPos.cint
-  dstRect.y = 10.cint
+  dstRect.y = 80.cint
   dstRect.w = fontWidth
   dstRect.h = fontHeight
   
-  
+  var compositeSurface = createRGBSurface(0, fontWidth, fontHeight, 24, rMask, gMask, bMask, aMask)
+  blitSurface(textSurface, nil, compositeSurface, nil)
 
-  let fontTexPtr = createTextureFromSurface(renderer, textSurface)
+  let fontTexPtr = createTextureFromSurface(renderer, compositeSurface)
   renderer.copy(fontTexPtr, nil, dstRect.addr)
   renderer.present()
 
@@ -91,7 +99,7 @@ proc sizedTTFToBitMap*(renderer: RendererPtr, fontFile: string, fontSize: cint, 
 
   (textureWidth, textureHeight) = generateTextureDimensions(totalChars, rectSides) 
 
-  var compositeSurface = createRGBSurface(0, textureWidth.cint, textureHeight.cint, 32, rMask, gMask, bMask, aMask)
+  var compositeSurface = createRGBSurface(0, textureWidth.cint, textureHeight.cint, 24, rMask, gMask, bMask, aMask)
   
   result.numColumns = textureWidth div rectSides
   result.numRows = textureHeight div rectSides
