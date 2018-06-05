@@ -76,8 +76,10 @@ proc generateTextureDimensions(totalChars, rectSide: int): (int, int) =
 
   return (texWidth, texHeight)
 
+proc fontBitmapByCellSize*(renderer: RendererPtr, fontFile: string, cellSize: int, hinting = TTF_HINTING_NORMAL, asciiStartCharNum = 32, asciiEndCharNum = 126): BitmappedFont =
+  discard
 
-proc sizedTTFToBitMap*(renderer: RendererPtr, fontFile: string, fontSize: cint, asciiStartCharNum = 32, asciiEndCharNum = 126): BitmappedFont =
+proc fontBitmapByFontSize*(renderer: RendererPtr, fontFile: string, fontSize: cint, hinting = TTF_HINTING_NORMAL, asciiStartCharNum = 32, asciiEndCharNum = 126): BitmappedFont =
   result = BitmappedFont()
   result.startingAsciiNum = asciiStartCharNum
 
@@ -91,7 +93,7 @@ proc sizedTTFToBitMap*(renderer: RendererPtr, fontFile: string, fontSize: cint, 
     
   let
     rectSides = fontHeight(font) # need this to calculate the square that bounds the fonts (to make monospaced)
-  # setFontHinting(font, TTF_HINTING_MONO)
+  setFontHinting(font, hinting.cint)
   
   var
     textureWidth: int
